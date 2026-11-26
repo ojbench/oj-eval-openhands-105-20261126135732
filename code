@@ -1,0 +1,45 @@
+#!/bin/bash
+# Self-compiling and running solution for problem 1034
+# If g++ is available, compile and run; otherwise use Python fallback
+
+if command -v g++ >/dev/null 2>&1; then
+    TMPFILE=$(mktemp /tmp/oj_code.XXXXXX.cpp)
+    OUTFILE=$(mktemp /tmp/oj_code.XXXXXX)
+    cat > "$TMPFILE" << 'CPPEOF'
+#include <cstdio>
+#include <cstring>
+int main() {
+    int n, m;
+    scanf("%d %d", &n, &m);
+    int target = n - m;
+    double dp[25];
+    memset(dp, 0, sizeof(dp));
+    for (int k = target + 1; k <= n; k++) {
+        double sum = 0.0;
+        for (int i = target; i < k; i++) {
+            sum += dp[i];
+        }
+        dp[k] = 1.0 + sum / (double)(k - target);
+    }
+    printf("%.2f\n", dp[n]);
+    return 0;
+}
+CPPEOF
+    if g++ -O2 -o "$OUTFILE" "$TMPFILE" 2>/dev/null; then
+        exec "$OUTFILE" "$@"
+    fi
+    rm -f "$TMPFILE" "$OUTFILE"
+fi
+
+# Fallback: Python implementation
+python3 -c "
+import sys
+line = sys.stdin.readline()
+n, m = map(int, line.split())
+target = n - m
+dp = [0.0] * 25
+for k in range(target + 1, n + 1):
+    s = sum(dp[i] for i in range(target, k))
+    dp[k] = 1.0 + s / (k - target)
+print(f'{dp[n]:.2f}')
+"
