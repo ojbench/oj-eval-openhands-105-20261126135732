@@ -1,5 +1,5 @@
-CXX = g++
-CXXFLAGS = -std=c++17 -O2
+CXX = cc
+CXXFLAGS = -O2
 TARGET = code
 
 all: $(TARGET)
