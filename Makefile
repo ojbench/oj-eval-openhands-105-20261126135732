@@ -1,4 +1,4 @@
-CXX = cc
+CXX = g++
 CXXFLAGS = -O2
 TARGET = code
 
